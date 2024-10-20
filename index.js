@@ -4,11 +4,21 @@ let secondsInput = document.getElementById('seconds')
 let playPauseBtn = document.getElementById('playPauseBtn')
 let resetBtn = document.getElementById('resetBtn')
 let toggleModeBtn = document.getElementById('toggleModeBtn')
+let lastTimeRecord = document.getElementById('lastTimeRecord')
 
-let interval // Variável para armazenar o intervalo
-let isRunning = false // Controle se o cronômetro está rodando ou pausado
-let totalTime = 0 // Tempo total em segundos
-let isTimer = false // Controle para saber se estamos no modo Timer ou Cronômetro
+let interval
+let isRunning = false
+let totalTime = 0
+let isTimer = false
+let startTime
+
+// Função para formatar o tempo em HH:MM:SS
+function formatTime(timeInSeconds) {
+    let hours = Math.floor(timeInSeconds / 3600)
+    let minutes = Math.floor((timeInSeconds % 3600) / 60)
+    let seconds = timeInSeconds % 60
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
 
 // Função para atualizar a exibição de horas, minutos e segundos
 function updateDisplay() {
@@ -21,25 +31,47 @@ function updateDisplay() {
     secondsInput.value = String(seconds).padStart(2, '0')
 }
 
+// Função para registrar o último tempo
+function recordLastTime() {
+    const timeString = formatTime(totalTime)
+    const mode = isTimer ? "Timer" : "Cronômetro"
+    
+    lastTimeRecord.innerHTML = `
+        <span class="time">${timeString}</span>
+        <span class="mode">${mode}</span>
+    `
+}
+
+// Função para limpar o registro
+function clearLastTimeRecord() {
+    lastTimeRecord.innerHTML = ''
+}
+
 // Função para iniciar o cronômetro ou temporizador
 function startTimer() {
     if (isRunning) {
         clearInterval(interval)
         playPauseBtn.textContent = 'Play'
+        if (!isTimer) {
+            recordLastTime()
+        }
     } else {
+        if (!isTimer) {
+            startTime = Date.now() - (totalTime * 1000)
+        }
         interval = setInterval(() => {
-            if (isTimer && totalTime > 0) { // Modo Timer (regressivo)
+            if (isTimer && totalTime > 0) {
                 totalTime--
-            } else if (!isTimer) { // Modo Cronômetro (progressivo)
+            } else if (!isTimer) {
                 totalTime++
             }
 
-            // Verificar se o timer chegou a zero
             if (isTimer && totalTime === 0) {
                 clearInterval(interval)
                 alert("O tempo acabou!")
                 isRunning = false
                 playPauseBtn.textContent = 'Play'
+                recordLastTime()
             }
 
             updateDisplay()
@@ -52,26 +84,30 @@ function startTimer() {
 // Função para resetar o cronômetro/temporizador
 function resetTimer() {
     clearInterval(interval)
+    if (isRunning && !isTimer) {
+        recordLastTime()
+    }
     isRunning = false
     playPauseBtn.textContent = 'Play'
 
     if (isTimer) {
-        totalTime = parseInputToSeconds() // Reseta para o tempo configurado no modo Timer
+        totalTime = parseInputToSeconds()
     } else {
-        totalTime = 0 // Reseta para 0 no modo Cronômetro
+        totalTime = 0
     }
 
     updateDisplay()
+    clearLastTimeRecord()
 }
 
 // Função para alternar entre o modo cronômetro e temporizador
 function toggleMode() {
     isTimer = !isTimer
-    resetTimer() // Reseta o cronômetro/timer ao alternar entre os modos
-    toggleModeBtn.textContent = isTimer ? 'Mudar para Cronômetro' : 'Mudar para Timer'
+    resetTimer()
+    toggleModeBtn.textContent = isTimer ? 'Switch to Cronômetro' : 'Switch to Timer'
 }
 
-// Converte a entrada de horas, minutos e segundos em segundos totais
+// Função para converter a entrada de tempo em segundos
 function parseInputToSeconds() {
     let hours = parseInt(hoursInput.value) || 0
     let minutes = parseInt(minutesInput.value) || 0
@@ -79,11 +115,17 @@ function parseInputToSeconds() {
     return (hours * 3600) + (minutes * 60) + seconds
 }
 
-// Permitir apenas números nos campos de horas, minutos e segundos
+// Função para permitir apenas números nos campos
 function allowOnlyNumbers(event) {
     let value = event.target.value
     if (isNaN(value) || value.includes('.')) {
-        event.target.value = value.replace(/\D/g, '') // Remove qualquer caractere não numérico
+        event.target.value = value.replace(/\D/g, '')
+    }
+
+    if (event.target === hoursInput) {
+        if (parseInt(value) > 23) event.target.value = '23'
+    } else {
+        if (parseInt(value) > 59) event.target.value = '59'
     }
 }
 
@@ -92,10 +134,21 @@ hoursInput.addEventListener('input', allowOnlyNumbers)
 minutesInput.addEventListener('input', allowOnlyNumbers)
 secondsInput.addEventListener('input', allowOnlyNumbers)
 
-// Event listeners para os botões de controle do cronômetro/timer
+// Event listener para mudar o valor quando o campo perde o foco
+hoursInput.addEventListener('blur', function() {
+    this.value = this.value.padStart(2, '0')
+})
+minutesInput.addEventListener('blur', function() {
+    this.value = this.value.padStart(2, '0')
+})
+secondsInput.addEventListener('blur', function() {
+    this.value = this.value.padStart(2, '0')
+})
+
+// Event listeners para os botões de controle
 playPauseBtn.addEventListener('click', () => {
     if (isTimer && !isRunning) {
-        totalTime = parseInputToSeconds() // Configurar o total de segundos a partir do input
+        totalTime = parseInputToSeconds()
     }
     startTimer()
 })

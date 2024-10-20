@@ -11,30 +11,41 @@ body {
     gap: 2rem;
 }
 
+.main-container {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    padding: 2rem;
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 h1 {
     text-transform: uppercase;
     letter-spacing: 3px;
     text-shadow: 0 0 10px #00ff88,
-        0 0 20px #00ff88,
-        0 0 40px #00ff88;
+                 0 0 20px #00ff88,
+                 0 0 40px #00ff88;
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
     0% {
         text-shadow: 0 0 10px #00ff88,
-            0 0 20px #00ff88;
+                     0 0 20px #00ff88;
     }
-
     50% {
         text-shadow: 0 0 20px #00ff88,
-            0 0 30px #00ff88,
-            0 0 40px #00ff88;
+                     0 0 30px #00ff88,
+                     0 0 40px #00ff88;
     }
-
     100% {
         text-shadow: 0 0 10px #00ff88,
-            0 0 20px #00ff88;
+                     0 0 20px #00ff88;
     }
 }
 
@@ -96,18 +107,60 @@ button:hover {
     text-shadow: 0 0 5px #00ff88;
 }
 
-
-div:nth-child(2) {
+.last-time-container {
     background: rgba(0, 255, 136, 0.05);
-    padding: 2rem;
-    border-radius: 15px;
     border: 1px solid rgba(0, 255, 136, 0.3);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    border-radius: 15px;
+    padding: 1.5rem;
+    min-width: 300px;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
 }
 
+.last-time-container h2 {
+    color: #00ff88;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 5px #00ff88;
+}
 
-div:nth-child(3) {
+.last-time-record {
+    background: rgba(0, 255, 136, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
     display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    transition: all 0.3s ease;
+}
+
+.last-time-record:hover {
+    background: rgba(0, 255, 136, 0.15);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.last-time-record .time {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00ff88;
+}
+
+.last-time-record .mode {
+    font-size: 0.9rem;
+    color: rgba(0, 255, 136, 0.8);
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .last-time-container {
+        min-width: unset;
+        width: 100%;
+        max-width: 400px;
+    }
 }
