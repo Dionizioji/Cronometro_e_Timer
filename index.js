@@ -104,7 +104,7 @@ function resetTimer() {
 function toggleMode() {
     isTimer = !isTimer
     resetTimer()
-    toggleModeBtn.textContent = isTimer ? 'Switch to Cronômetro' : 'Switch to Timer'
+    toggleModeBtn.textContent = isTimer ? 'Mude para Cronômetro' : 'Mude para Timer'
 }
 
 // Função para converter a entrada de tempo em segundos
