@@ -68,7 +68,7 @@ function resetTimer() {
 function toggleMode() {
     isTimer = !isTimer
     resetTimer() // Reseta o cronômetro/timer ao alternar entre os modos
-    toggleModeBtn.textContent = isTimer ? 'Switch to Cronômetro' : 'Switch to Timer'
+    toggleModeBtn.textContent = isTimer ? 'Mudar para Cronômetro' : 'Mudar para Timer'
 }
 
 // Converte a entrada de horas, minutos e segundos em segundos totais
